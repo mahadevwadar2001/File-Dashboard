@@ -2,25 +2,125 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>File Upload Dashboard</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f7f9fc;
+            padding: 40px;
+        }
+
+        h2 {
+            font-size: 28px;
+            color: #333;
+        }
+
+        .upload-box {
+            background: #e8f3ff;
+            padding: 30px;
+            border-radius: 10px;
+            border: 2px dashed #5fa8ff;
+            width: 60%;
+            margin: auto;
+            text-align: center;
+        }
+
+        .btn-upload {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            border: none;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        table {
+            width: 80%;
+            margin: 30px auto;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th {
+            background: #006ad7;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .btn-download {
+            background: #28a745;
+            padding: 8px 15px;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+
+        .btn-delete {
+            background: #dc3545;
+            padding: 8px 15px;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+
+        .success-box {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            width: 60%;
+            margin: auto;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
+
 <body>
-    <h2>Upload File</h2>
+
+<h2>📁 File Upload Dashboard</h2>
+
+<div th:if="${message}" class="success-box">
+    <p th:text="${message}"></p>
+</div>
+
+<div class="upload-box">
+    <h3>Select a file to upload</h3>
 
     <form action="/upload" method="post" enctype="multipart/form-data">
         <input type="file" name="file" required>
-        <button type="submit">Upload</button>
+        <br><br>
+        <button type="submit" class="btn-upload">Upload File</button>
     </form>
+</div>
 
-    <h3>Uploaded Files</h3>
-    <table border="1">
-        <tr>
-            <th>Name</th>
-            <th>Uploaded Time</th>
-        </tr>
-        <tr th:each="f : ${files}">
-            <td th:text="${f.fileName}"></td>
-            <td th:text="${f.uploadTime}"></td>
-        </tr>
-    </table>
+<h3 style="margin-left: 150px;">Uploaded Files</h3>
+
+<table>
+    <tr>
+        <th>File Name</th>
+        <th>Uploaded Time</th>
+        <th>Actions</th>
+    </tr>
+
+    <tr th:each="f : ${files}">
+        <td th:text="${f.fileName}"></td>
+        <td th:text="${#temporals.format(f.uploadTime, 'dd-MM-yyyy HH:mm:ss')}"></td>
+
+        <td>
+            <a th:href="@{'/download/' + ${f.id}}" class="btn-download">Download</a>
+            &nbsp;
+            <a th:href="@{'/delete/' + ${f.id}}" class="btn-delete"
+               onclick="return confirm('Delete this file?')">Delete</a>
+        </td>
+    </tr>
+</table>
+
 </body>
 </html>
